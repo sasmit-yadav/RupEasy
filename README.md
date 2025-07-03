@@ -7,7 +7,7 @@ RupEasy is a digital microloan and financial management platform designed for as
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB (via Mongoose)
-- **ML Model:** Python (Flask or similar, in `/model` folder)
+- **ML Model:** Python (Flask or similar, in `/ml_model` folder)
 - **Other:** AI-based credit scoring, RESTful APIs
 
 ## Features
@@ -37,7 +37,7 @@ RupEasy is a digital microloan and financial management platform designed for as
      ```
    - Install Python dependencies:
      ```bash
-     pip install -r requirements.txt
+     pip3 install -r requirements.txt
      ```
    - Start the ML model server:
      ```bash
