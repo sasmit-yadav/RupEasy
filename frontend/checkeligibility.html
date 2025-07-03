@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Check Eligibility – RupEasy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="contact.html">Contact Lender</a></li>
+
+      <li><a href="myprofile.html">My Profile</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+  
+  <!-- Back Button -->
+  <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+
+  <!-- Eligibility Form -->
+  <section class="eligibility-section">
+    <h2>Check Your Loan Eligibility</h2>
+
+   <form id="eligibilityForm" class="eligibility-form">
+    <label for="aadhar">Aadhar Card No:</label>
+  <input type="number" id="aadhar" required />
+
+  <label for="income">Monthly Income (₹):</label>
+  <input type="number" id="income" required />
+
+  <label for="employment">Employment Type:</label>
+  <select id="employment" required>
+    <option value="">Select...</option>
+    <option value="salaried">Salaried</option>
+    <option value="self-employed">Self-Employed</option>
+    <option value="student">Student</option>
+    <option value="unemployed">Unemployed</option>
+  </select>
+
+  <label for="amount">Loan Amount Requested (₹):</label>
+  <input type="number" id="amount" required />
+
+  <button type="submit" class="btn">Check Eligibility</button>
+
+</form>
+<div id="eligibilityResult" class="result-box"></div>
+  </section>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("eligibilityForm");
+  const resultBox = document.getElementById("eligibilityResult");
+
+  if (form && resultBox) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const income = parseInt(document.getElementById("income").value);
+      const employment = document.getElementById("employment").value;
+      const amount = parseInt(document.getElementById("amount").value);
+
+      let eligible = false;
+
+      if (income >= 10000 && amount <= income * 10 && employment !== "unemployed") {
+        eligible = true;
+      }
+
+      resultBox.style.display = "block";
+      if (eligible) {
+        resultBox.style.backgroundColor = "#27AE60";
+        resultBox.textContent = "✅ Congratulations! You are eligible for a loan.";
+      } else {
+        resultBox.style.backgroundColor = "#E74C3C";
+        resultBox.textContent = "❌ Sorry, you are not eligible at this moment.";
+      }
+    });
+  }
+});
+
+
+</script>
+</body>
+</html>

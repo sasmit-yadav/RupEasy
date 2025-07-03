@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinTech Microloan Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<style>
+.animated-bg {
+  background: linear-gradient(135deg, #306cce, #06b6d4, #306cce, #06b6d4);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  color: white;
+  padding: 120px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  color: #bcbfcc;
+  margin-bottom: 30px;
+}
+
+.hero-section .btn {
+  background-color: #f9cb40; /* Bright Yellow */
+  padding: 12px 25px;
+  border-radius: 6px;
+  color: #1e1e1e;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 12px rgba(249, 203, 64, 0.3);
+}
+
+.hero-section .btn:hover {
+  background-color: #f1b900; /* Deeper Yellow */
+  box-shadow: 0 0 18px rgba(241, 185, 0, 0)
+}
+
+
+  header {
+    position: relative;
+    z-index: 1;
+    padding: 100px 20px;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .about, .testimonials {
+    padding: 80px 20px;
+    background-color: #2c3e50;
+    color: #bcbfcc;
+    text-align: center;
+    position: relative;
+  }
+
+  .about::after {
+    content: "";
+    display: block;
+    height: 80px;
+    background: linear-gradient(to bottom, #2c3e50, #1e1e1e);
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+  }
+
+
+  .about h2, .testimonials h2 {
+    font-size: 2.4rem;
+    margin-bottom: 25px;
+    color: white;
+    letter-spacing: 1px;
+  }
+
+  .about p, .testimonials p {
+    font-size: 1.15rem;
+    max-width: 800px;
+    margin: 0 auto 18px;
+    color: #bcbfcc;
+    line-height: 1.7;
+  }
+
+  .testimonial-card {
+    background-color: #2b2b2b;
+    border-left: 4px solid #00c896;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 30px auto;
+    max-width: 650px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .testimonial-card strong {
+    display: block;
+    margin-top: 14px;
+    color: white;
+    font-size: 1.05rem;
+  }
+
+  .stats {
+  background-color: #2c3e50;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  padding: 60px 20px;
+  color: white;
+}
+
+.stat strong {
+  font-size: 2.5rem;
+  color: #00c896;
+}
+
+.stat p {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #bcbfcc;
+}
+
+
+  nav .nav-links li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+
+.clean-partition {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  background-color: #2c3e50;
+}
+
+/* Breathing space */
+.section-gap {
+  background-color: #ffffff;
+  height: 60px;
+}
+
+
+.footer-note {
+  text-align: center;
+  padding: 20px;
+  background-color: #2c3e50;
+  color: #bcbfcc;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  margin-top: 40px;
+  border-top: 1px solid #1e1e1e;
+}
+
+/* 🔝 Scroll-to-Top Button */
+#scrollTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 100;
+  font-size: 22px;
+  background-color: #00c896;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 12px 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#scrollTopBtn:hover {
+  background-color: #00b288;
+  transform: scale(1.1);
+
+}
+
+.faq-section {
+  background-color: #2c3e50;
+  color: #bcbfcc;
+  padding: 80px 20px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.faq-section h2 {
+  text-align: center;
+  font-size: 2.4rem;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.faq-item {
+  margin-bottom: 15px;
+  border: 1px solid #2c3e50;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.faq-question {
+  background-color: #2b2b2b;
+  color: #bcbfcc;
+  font-size: 1.1rem;
+  padding: 18px 20px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+  background-color: #00c896;
+  color: #1e1e1e;
+}
+
+.faq-answer {
+  background-color: #2b2b2b;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+
+.faq-answer p {
+  padding: 15px 0;
+  margin: 0;
+  font-size: 1rem;
+  color: white;
+}
+
+
+.get-involved {
+  background-color: #2c3e50;
+  color: #bcbfcc;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.get-involved h2 {
+  font-size: 2.4rem;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.get-involved .subtitle {
+  font-size: 1.1rem;
+  color: #8f9aad;
+  margin-bottom: 40px;
+}
+
+.involve-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.card {
+  background-color: #2b2b2b;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 300px;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+.card h3 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #bcbfcc;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.card button {
+  background-color: #00c896;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #00b288;
+}
+
+.made-with-love {
+  margin-top: 40px;
+  font-size: 0.95rem;
+  color: white;
+}
+
+.section-shadow {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Ensure the dropdown menu appears above all background elements */
+.dropdown-content {
+  position: absolute;
+  background-color: #2b2b2b;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  z-index: 9999;
+  display: none;
+  right: 0;
+  top: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.profile-dropdown {
+  position: relative;
+  z-index: 10000; /* ensure parent also stacks above bg */
+}
+
+
+</style>
+
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+  <li><a href="#about">About</a></li>
+  <li><a href="#testimonials">Testimonials</a></li>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="signin.html">Sign In</a></li>
+  <li><a href="signup.html">Sign Up</a></li>
+</ul>
+  </nav>
+
+
+
+<header class="hero-section animated-bg">
+  <h1>FinTech Microloan Platform</h1>
+  <p>Empowering beginner entrepreneurs with easy, AI-powered microloans.</p>
+  <a href="apply.html" class="btn">Apply for a Loan</a>
+</header>
+
+
+  <section class="features">
+    <div class="feature">
+      <h2>🔍 AI-Based Credit Score</h2>
+      <p>Our model predicts your creditworthiness quickly and fairly.</p>
+    </div>
+    <div class="feature">
+      <h2>💡 Simple & Fast</h2>
+      <p>No complex paperwork. Apply within minutes.</p>
+    </div>
+    <div class="feature">
+      <h2>🔐 Secure & Transparent</h2>
+      <p>Your data is safe and your process is clear.</p>
+    </div>
+  </section>
+
+  <!--  About Section -->
+  <section class="about" id="about" class="section-shadow">
+    <h2>About RupEasy</h2>
+    <p>
+      RupEasy is a digital microloan platform designed for aspiring entrepreneurs.
+      We use AI-driven analysis to evaluate loan applications and provide transparent,
+      fast, and accessible funding for small businesses.
+    </p>
+    <p>
+      Our mission is to break the barriers to capital and help build sustainable livelihoods
+      through responsible lending.
+    </p>
+  </section>
+
+<!-- Modern Skewed Partition -->
+<div class="angled-divider"></div>
+<div class="section-gap"></div>
+
+
+  <!-- Testimonials Section -->
+  <section class="testimonials" id="testimonials" class="section-shadow">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial-card animated-bg">
+      <p>“RupEasy helped me fund my small bakery within a week. It was so smooth and easy!”</p>
+      <strong>— Anjali, Home Baker</strong>
+    </div>
+    <div class="testimonial-card animated-bg">
+      <p>“I never thought a loan could be this quick and stress-free. The AI credit check is genius!”</p>
+      <strong>— Raj, Streetwear Startup</strong>
+    </div>
+    <div class="testimonial-card animated-bg">
+      <p>“Transparent, fair, and secure. Exactly what I needed to start my journey.”</p>
+      <strong>— Priya, Handmade Crafts Seller</strong>
+    </div>
+  </section>
+
+  <div class="section-gap"></div>
+
+  
+
+   <!-- FAQ Section -->
+  <section class="faq-section" id="faq" class="section-shadow">
+  <h2>Frequently Asked Questions</h2>
+  
+  <div class="faq-item">
+    <button class="faq-question">What is RupEasy and how does it work?</button>
+    <div class="faq-answer">
+      <p>RupEasy is an AI-powered microloan platform that evaluates your eligibility instantly and connects you with small, fast, and fair loans.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Who can apply for a loan?</button>
+    <div class="faq-answer">
+      <p>Anyone with a basic business idea or need for working capital can apply — no formal credit history required.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Is my data safe with RupEasy?</button>
+    <div class="faq-answer">
+      <p>Absolutely. We use industry-standard encryption and store your data securely with full transparency.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">How fast can I get approved?</button>
+    <div class="faq-answer">
+      <p>Most applications are reviewed and approved within 24 hours, thanks to our AI-powered scoring model.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Do I need any documents to apply?</button>
+    <div class="faq-answer">
+      <p>Just a valid ID proof and a basic outline of your funding needs. No complex paperwork involved.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<!-- Get Involved Section -->
+<section class="get-involved" class="section-shadow">
+  <h2>Get Involved</h2>
+  <p class="subtitle">Join us in empowering micro-entrepreneurs — one loan at a time!</p>
+
+  <div class="involve-cards">
+    <div class="card animated-bg" >
+      <h3>📢 Refer a Friend</h3>
+      <p>Know someone who could benefit from easy microloans? Refer them to RupEasy and help them grow.</p>
+      <button onclick="window.location.href='https://wa.me/?text=Check%20out%20RupEasy%20microloans%20for%20entrepreneurs!%20https://rupeasy.com'">Refer Now</button>
+    </div>
+    <div class="card animated-bg" >
+      <h3>🤝 Become a Partner</h3>
+      <p>Collaborate with us as a community ambassador or lending partner to spread financial inclusion.</p>
+      <button>Join Us</button>
+    </div>
+    <div class="card animated-bg">
+      <h3>📬 Contact Our Team</h3>
+      <p>Have ideas, feedback or want to collaborate? We’re always open to conversations.</p>
+      <button onclick="window.location.href='mailto:support@rupeasy.com'">Get in Touch</button>
+
+    </div>
+  </div>
+
+  <p class="made-with-love">© 2025 RupEasy | Made with ❤️ by Team RupEasy</p>
+</section>
+
+
+<!-- Scroll to Top Button -->
+<button id="scrollTopBtn" title="Go to top">↑</button>
+
+
+  <script src="script.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Scroll-to-top button
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    window.onscroll = () => {
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        scrollBtn.style.display = "block";
+      } else {
+        scrollBtn.style.display = "none";
+      }
+    };
+
+    scrollBtn.onclick = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // FAQ toggle logic
+    const faqQuestions = document.querySelectorAll(".faq-question");
+
+    faqQuestions.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const answer = btn.nextElementSibling;
+        btn.classList.toggle("active");
+
+        if (answer.style.maxHeight) {
+          answer.style.maxHeight = null;
+          answer.style.padding = "0 20px";
+        } else {
+          answer.style.maxHeight = answer.scrollHeight + "px";
+          answer.style.padding = "15px 20px";
+        }
+
+        // Collapse others
+        faqQuestions.forEach(otherBtn => {
+          if (otherBtn !== btn) {
+            const otherAnswer = otherBtn.nextElementSibling;
+            otherAnswer.style.maxHeight = null;
+            otherAnswer.style.padding = "0 20px";
+            otherBtn.classList.remove("active");
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const profileBtn = document.getElementById("profileBtn");
+  const dropdownMenu = document.getElementById("dropdown-content");
+
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!profileBtn.contains(e.target)) {
+      dropdownMenu.style.display = "none";
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>

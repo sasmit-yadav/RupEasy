@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Loan Agreement – RupEasy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .agreement-text {
+      white-space: pre-wrap;
+      font-size: 1rem;
+      color: #333;
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      background: #fefefe;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 20px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .success-msg {
+      margin-top: 20px;
+      color: green;
+      text-align: center;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="contact.html">Contact Lender</a></li>
+      <li><a href="myprofile.html">My Profile</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+<a href="dashboard.html" class="back-btn">← Back</a>
+  <div class="container">
+    <h2>General Loan Agreement</h2>
+
+    <div class="agreement-text" id="agreementContent">
+     This General Loan Agreement outlines the terms and conditions between the Borrower and RupEasy’s registered lending partners. This agreement is intended to ensure transparency, accountability, and mutual understanding in all microloan transactions facilitated through the RupEasy platform.
+
+By proceeding, I (the Borrower) hereby agree to the following:
+
+• I shall repay the loan in full through timely monthly installments as per the repayment schedule communicated to me at the time of loan disbursal.
+
+• I accept the interest rate, loan tenure, and other charges applicable to this loan, as explicitly disclosed by RupEasy or its lending partners.
+
+• I authorize RupEasy and/or its financial partners to verify my identity and eligibility through the Aadhar number and any other KYC details I have provided.
+
+• I accept full legal and financial responsibility for this loan. In case of default or failure to repay as agreed, I am aware that this may lead to legal action, additional penalties, and reporting to credit bureaus.
+
+• I understand that this loan is non-transferable and cannot be assigned to any other party without prior written consent from RupEasy and its partners.
+
+• I acknowledge that in case of any dispute, I will first reach out to RupEasy’s customer support or designated grievance cell for resolution. Any unresolved disputes will be governed under the jurisdiction of the courts of India.
+
+• I consent to receive all loan-related communications via email, SMS, or app notifications, and accept that digital records shall be treated as valid evidence in any legal context.
+
+• I understand and agree that my data may be securely stored, analyzed, or shared with credit bureaus, financial institutions, or regulatory authorities as required under applicable Indian laws.
+
+I confirm that the Aadhar number and name I have entered below are accurate and voluntarily provided. I digitally sign this agreement as a mark of acceptance and consent to all the terms mentioned above.
+
+    </div>
+
+    <form id="agreementForm">
+      <label for="aadhar">Enter Your Aadhar Number:</label>
+      <input type="text" id="aadhar" maxlength="12" required pattern="\\d{12}" placeholder="1234-5678-9012" />
+
+      <label for="signature">Type Your Full Name (Digital Signature):</label>
+      <input type="text" id="signature" required placeholder="Your Full Name" />
+
+      <button type="submit">Sign & Accept</button>
+    </form>
+
+    <div class="success-msg" id="successMessage" style="display:none;">
+      ✅ Agreement signed successfully!
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("agreementForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const aadhar = document.getElementById("aadhar").value.trim();
+      const signature = document.getElementById("signature").value.trim();
+
+      if (aadhar.length !== 12 || !/^\d{12}$/.test(aadhar)) {
+        alert("❌ Please enter a valid 12-digit Aadhar number.");
+        return;
+      }
+
+      if (signature.length < 3) {
+        alert("❌ Please enter a valid full name for signature.");
+        return;
+      }
+
+      // Optional: Save to backend (Firebase or Flask)
+      // Example:
+      // fetch("/api/save-agreement", { method: "POST", body: JSON.stringify({ aadhar, signature }) })
+
+      document.getElementById("successMessage").style.display = "block";
+      document.getElementById("agreementForm").reset();
+    });
+  </script>
+
+</body>
+</html>

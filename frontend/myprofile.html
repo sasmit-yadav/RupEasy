@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile – RupEasy</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .profile-section {
+      max-width: 600px;
+      margin: 60px auto;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .profile-section h2 {
+      text-align: center;
+      color: #2C3E50;
+      margin-bottom: 30px;
+    }
+
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile-form label {
+      font-weight: bold;
+      color: #34495E;
+    }
+
+    .profile-form input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      background-color: #f9fafb;
+    }
+
+    .profile-form input:focus {
+      border-color: #1abc9c;
+      outline: none;
+    }
+
+    .profile-form .btn {
+      margin-top: 10px;
+      padding: 14px;
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .profile-form .btn:hover {
+      background-color: #16A085;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin: 20px 30px;
+      color: #2C3E50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-btn:hover {
+      color: #1ABC9C;
+    }
+  </style>
+</head>
+<body>
+
+  
+<nav class="navbar">
+  <div class="logo">RupEasy</div>
+  <ul class="nav-links" id="navLinks">
+   
+  </ul>
+</nav>
+
+<a href="#" class="back-btn" id="backBtn">← Back</a>
+
+
+  <section class="profile-section">
+    <h2>My Profile</h2>
+    <form id="profileForm" class="profile-form">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" readonly>
+
+     <!-- Borrower Fields -->
+<div id="borrowerFields" style="display: none;">
+  <label for="salary">Monthly Salary (₹):</label>
+  <input type="number" id="salary" name="salary" min="0">
+</div>
+
+      <div id="lenderFields" style="display: none;">
+        <label for="interestRate">Interest Rate (%):</label>
+        <input type="number" id="interestRate" step="0.1">
+
+        <label for="maxLoanAmount">Max Loan Amount (₹):</label>
+        <input type="number" id="maxLoanAmount">
+
+        <label for="availableFunds">Available Funds (₹):</label>
+        <input type="number" id="availableFunds">
+      </div>
+
+      <button type="submit" class="btn">Update Profile</button>
+    </form>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const role = sessionStorage.getItem("userRole");
+      const email = sessionStorage.getItem("userEmail");
+
+      if (!role || !email) {
+        alert("Please login first.");
+        window.location.href = "signin.html";
+        return;
+      }
+
+      if (role === "borrower") {
+        document.getElementById("borrowerFields").style.display = "block";
+      } else if (role === "lender") {
+        document.getElementById("lenderFields").style.display = "block";
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/profile?email=${encodeURIComponent(email)}`);
+        const user = await res.json();
+
+        if (res.ok && user) {
+          document.getElementById("name").value = user.name || "";
+          document.getElementById("email").value = user.email || "";
+          if (role === "borrower") {
+            document.getElementById("salary").value = user.salary || "";
+          } else if (role === "lender") {
+            document.getElementById("interestRate").value = user.interestRate ?? "";
+            document.getElementById("maxLoanAmount").value = user.maxLoanAmount ?? "";
+            document.getElementById("availableFunds").value = user.availableFunds ?? "";
+          }
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+        alert("Failed to load profile.");
+      }
+
+      document.getElementById("profileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          email,
+          name: document.getElementById("name").value,
+        };
+
+        if (role === "borrower") {
+          payload.salary = Number(document.getElementById("salary").value);
+        } else if (role === "lender") {
+          payload.interestRate = Number(document.getElementById("interestRate").value);
+          payload.maxLoanAmount = Number(document.getElementById("maxLoanAmount").value);
+          payload.availableFunds = Number(document.getElementById("availableFunds").value);
+        }
+
+        try {
+          const res = await fetch("http://localhost:5000/api/update-profile", {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
+          const result = await res.json();
+          if (res.ok) {
+            alert("Profile updated successfully!");
+          } else {
+            alert("Error: " + (result.error || "Update failed."));
+          }
+        } catch (err) {
+          console.error("Update error:", err);
+          alert("Something went wrong.");
+        }
+      });
+    });
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "signin.html";
+    }
+  </script>
+
+  <script>
+    const role = sessionStorage.getItem("userRole");
+const navLinks = document.getElementById("navLinks");
+const backBtn = document.getElementById("backBtn");
+
+if (!role) {
+  alert("Please log in.");
+  window.location.href = "signin.html";
+}
+
+// Set links and back button based on role
+if (role === "borrower") {
+  navLinks.innerHTML = `
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="myloans.html">My Loans</a></li>
+    <li><a href="myprofile.html">My Profile</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+  `;
+  backBtn.href = "dashboard.html";
+} else if (role === "lender") {
+  navLinks.innerHTML = `
+    <li><a href="lender-dashboard.html">Dashboard</a></li>
+    <li><a href="myprofile.html">My Profile</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+  `;
+  backBtn.href = "lender-dashboard.html";
+}
+
+  </script>
+</body>
+</html>

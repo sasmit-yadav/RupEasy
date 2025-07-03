@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loan Status – RupEasy</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      color: #333;
+    }
+
+    nav {
+      background: #2c3e50;
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .title {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    nav button {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    nav button:hover {
+      background-color: #c0392b;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 32px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 26px;
+    }
+
+    p {
+      color: #555;
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #f5f5f5;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #eee;
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-approved {
+      background: #d4edda;
+      color: #2e7d32;
+    }
+
+    .status-rejected {
+      background: #f8d7da;
+      color: #c0392b;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #b38f00;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 20px;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      td {
+        position: relative;
+        padding-left: 50%;
+        border-bottom: 1px solid #ddd;
+      }
+
+      td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 16px;
+        top: 14px;
+        font-weight: bold;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+
+      <li><a href="contact.html">Contact Lender</a></li>
+
+      <li><a href="myprofile.html">My Profile</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Back Button -->
+  <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+
+
+  <div class="container">
+    <h2>Hello, <span id="borrowerName">Borrower</span> 👋</h2>
+    <p>Email: <span id="borrowerEmail">email@example.com</span></p>
+
+    <h3 style="margin-top: 32px;">Your Loan Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Lender</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="statusTableBody">
+        <!-- Loan rows here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function fetchLoanStatus() {
+      const email = sessionStorage.getItem("userEmail");
+      const name = sessionStorage.getItem("userName");
+
+      if (!email) {
+        alert("Please login first.");
+        window.location.href = "signin.html";
+        return;
+      }
+
+      document.getElementById("borrowerEmail").textContent = email;
+      document.getElementById("borrowerName").textContent = name;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/my-loans?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+
+        const tableBody = document.getElementById("statusTableBody");
+        tableBody.innerHTML = "";
+
+        if (!data || !data.loans || data.loans.length === 0) {
+          tableBody.innerHTML = "<tr><td colspan='4'>No loan applications found.</td></tr>";
+          return;
+        }
+
+        data.loans.forEach(loan => {
+          const tr = document.createElement("tr");
+
+          const badgeClass = `status-${loan.status.toLowerCase()}`;
+
+          tr.innerHTML = `
+            <td data-label="Amount">₹${loan.amount}</td>
+            <td data-label="Status"><span class="badge ${badgeClass}">${loan.status}</span></td>
+            <td data-label="Lender">${loan.lenderEmail}</td>
+            <td data-label="Date">${new Date(loan.date).toLocaleDateString('en-IN')}</td>
+          `;
+
+          tableBody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error("Error fetching loans:", err);
+        alert("Something went wrong. Try again later.");
+      }
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "signin.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchLoanStatus);
+  </script>
+</body>
+</html>

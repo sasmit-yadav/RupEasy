@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact Lender – RupEasy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f7;
+      margin: 0;
+  
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .success {
+      margin-top: 20px;
+      text-align: center;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+ <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="contact.html">Contact Lender</a></li>
+      <li><a href="myprofile.html">My Profile</a></li>
+      <li><a href="signin.html" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+  <a href="dashboard.html" class="back-btn">← Back</a>
+  <div class="container">
+    <h2>Contact Your Lender</h2>
+
+    <form id="contactForm">
+      <label for="lenderEmail">Lender's Email:</label>
+      <select id="lenderEmail" required></select>
+
+
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" placeholder="Loan Clarification, EMI Delay..." required />
+
+      <label for="message">Message:</label>
+      <textarea id="message" rows="6" placeholder="Type your message here..." required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div class="success" id="successMessage" style="display: none;">
+      ✅ Message sent to lender successfully!
+    </div>
+  </div>
+
+  <script>
+  window.addEventListener("DOMContentLoaded", async () => {
+    const dropdown = document.getElementById("lenderEmail");
+    try {
+      const res = await fetch("http://localhost:5000/api/lenders");
+      const lenders = await res.json();
+
+      lenders.forEach(lender => {
+        const option = document.createElement("option");
+        option.value = lender.email;
+        option.textContent = `${lender.name} (${lender.email})`;
+        dropdown.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Failed to load lenders:", err);
+    }
+  });
+</script>
+
+<script>
+  const contactForm = document.getElementById("contactForm");
+  contactForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const from = sessionStorage.getItem("userEmail");
+    const to = document.getElementById("lenderEmail").value;
+    const subject = document.getElementById("subject").value.trim();
+    const body = document.getElementById("message").value.trim();
+
+    try {
+      const res = await fetch("http://localhost:5000/api/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ from, to, subject, body })
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        document.getElementById("successMessage").style.display = "block";
+        contactForm.reset();
+      } else {
+        alert(result.error || "Failed to send message.");
+      }
+    } catch (err) {
+      console.error("Message send error:", err);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lender Dashboard – RupEasy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f7f9fc;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .navbar {
+      background-color: #2f3640;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #00a8ff;
+    }
+
+    .dashboard {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      margin-top: 30px;
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #444;
+    }
+
+    .loan-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .loan-table th, .loan-table td {
+      padding: 16px;
+      text-align: left;
+    }
+
+    .loan-table th {
+      background-color: #f1f3f6;
+      color: #555;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    .loan-table tr {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .loan-table tr:hover {
+      background-color: #f9fbff;
+    }
+
+    .btn-action {
+      padding: 8px 14px;
+      margin: 4px 4px 0 0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .btn-approve {
+      background-color: #27ae60;
+      color: white;
+    }
+
+    .btn-approve:hover {
+      background-color: #219150;
+    }
+
+    .btn-reject {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .btn-reject:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-action:not(.btn-approve):not(.btn-reject) {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .btn-action:not(.btn-approve):not(.btn-reject):hover {
+      background-color: #2980b9;
+    }
+
+    @media (max-width: 768px) {
+      .loan-table, .loan-table thead, .loan-table tbody, .loan-table th, .loan-table td, .loan-table tr {
+        display: block;
+      }
+
+      .loan-table thead tr {
+        display: none;
+      }
+
+      .loan-table td {
+        position: relative;
+        padding-left: 50%;
+        border: none;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .loan-table td::before {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        white-space: nowrap;
+        font-weight: bold;
+        content: attr(data-label);
+      }
+    }
+    .modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+#loanHistoryList {
+  padding-left: 18px;
+}
+
+.message-list {
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 8px;
+}
+
+.message-card {
+  background-color: #f9fbff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.message-card:hover {
+  transform: scale(1.01);
+}
+
+.message-card strong {
+  color: #2f3640;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.message-card small {
+  color: #888;
+  display: block;
+  margin-top: 8px;
+}
+
+/* Red dot indicator */
+#viewMessagesBtn.has-new::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.reply-box {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reply-text {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="myprofile.html">My Profile</a></li>
+      <li><a href="#" id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <section class="dashboard">
+    <h2>Welcome, <span id="lenderName">Lender</span> 👋</h2>
+
+
+     <button class="btn-action" id="viewMessagesBtn" onclick="showMessages()" style="margin: 16px 0; position: relative;">
+  📩 View Messages
+</button>
+
+
+
+    <h3>Loan Requests Sent to You</h3>
+    <table class="loan-table">
+      <thead>
+        <tr>
+          <th>Borrower</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="loanTableBody">
+        <!-- Data will populate here -->
+      </tbody>
+    </table>
+  </section>
+  <!-- Loan History Modal -->
+<div id="historyModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h3>Borrower Details</h3>
+    <div id="borrowerInfo"></div>
+    <h4>Loan History</h4>
+    <ul id="loanHistoryList"></ul>
+  </div>
+</div>
+
+
+<div id="messagesModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeMessagesModal()">&times;</span>
+    <h3>Messages from Borrowers</h3>
+    <div id="messageList" class="message-list"></div>
+
+  </div>
+</div>
+
+
+
+
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const lenderName = sessionStorage.getItem("userName");
+      const lenderEmail = sessionStorage.getItem("userEmail");
+
+      if (!lenderEmail) {
+        alert("Please sign in first.");
+        window.location.href = "signin.html";
+        return;
+      }
+
+      document.getElementById("lenderName").textContent = lenderName || "Lender";
+
+      await checkNewMessages(); // Check if there's anything new
+
+
+      const tableBody = document.getElementById("loanTableBody");
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/lender-loans?email=${encodeURIComponent(lenderEmail)}`);
+        const loans = await res.json();
+
+        if (!Array.isArray(loans) || loans.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="5">No loan requests found.</td></tr>`;
+          return;
+        }
+
+        loans.forEach(loan => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td data-label="Borrower">${loan.name}</td>
+            <td data-label="Amount">₹${loan.amount}</td>
+            <td data-label="Status">${loan.status}</td>
+            <td data-label="Date">${new Date(loan.date).toLocaleDateString()}</td>
+            <td data-label="Details" id="action-${loan._id}">
+              ${
+                loan.status && loan.status.toLowerCase() === 'pending'
+                  ? `<button class="btn-action btn-approve" onclick="updateLoanStatus('${loan._id}', 'Approved')">Approve</button>
+                    : <button class="btn-action btn-reject" onclick="updateLoanStatus('${loan._id}', 'Rejected')">Reject</button>`
+                   :''
+              }
+              <br>
+              <button class="btn-action" onclick="viewHistory('${loan.email}', '${loan.name}')">View Details</button>
+            </td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Loan fetch failed:", err);
+        tableBody.innerHTML = `<tr><td colspan="5">Error loading loans.</td></tr>`;
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        sessionStorage.clear();
+        window.location.href = "signin.html";
+      });
+    });
+
+    async function updateLoanStatus(id, status) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/update-loan-status/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert(`Loan ${status} successfully!`);
+          location.reload();
+        } else {
+          alert("Error: " + (data.error || "Status update failed."));
+        }
+      } catch (err) {
+        console.error("Status update error:", err);
+        alert("Failed to update loan status.");
+      }
+    }
+
+  async function viewHistory(borrowerEmail, borrowerName) {
+  try {
+  const res = await fetch(`http://localhost:5000/api/my-loans?email=${encodeURIComponent(borrowerEmail)}`);
+
+  const data = await res.json();
+  console.log("📦 API Response:", data);
+    
+
+    if (!data || !data.borrower) {
+      alert(`No details found for ${borrowerName}`);
+      return;
+    }
+
+    const { borrower, loans } = data;
+
+   console.log("💰 Salary:", borrower.salary);
+
+document.getElementById("borrowerInfo").innerHTML = `
+  <p><strong>Name:</strong> ${borrower.name || 'N/A'}</p>
+  <p><strong>Email:</strong> ${borrower.email || 'N/A'}</p>
+  <p><strong>Salary:</strong> ₹${borrower.salary ?? 'Not available'}</p>
+`;
+
+
+    const list = document.getElementById("loanHistoryList");
+    list.innerHTML = "";
+
+    if (!loans || loans.length === 0) {
+      list.innerHTML = "<li>No previous loans.</li>";
+    } else {
+      loans.forEach(loan => {
+        const li = document.createElement("li");
+        li.textContent = `₹${loan.amount} - ${loan.status} on ${new Date(loan.date).toLocaleDateString('en-IN')}`;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("historyModal").style.display = "flex";
+
+  } 
+    catch (err) {
+  console.error("Fetch error:", err);
+}
+  }
+
+
+
+function closeModal() {
+  document.getElementById("historyModal").style.display = "none";
+}
+
+  </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.clear();
+      window.location.href = "signin.html";
+    });
+  });
+</script>
+
+<script>
+  async function showMessages() {
+  const lenderEmail = sessionStorage.getItem("userEmail");
+  if (!lenderEmail) return alert("Login required");
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
+    const messages = await res.json();
+
+    const list = document.getElementById("messageList");
+    list.innerHTML = "";
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      list.innerHTML = "<p>No messages from borrowers.</p>";
+      return;
+    }
+
+    messages.forEach(msg => {
+      const card = document.createElement("div");
+      card.className = "message-card";
+
+      let html = `
+        <strong>📧 From:</strong> ${msg.from}<br>
+        <strong>📝 Subject:</strong> ${msg.subject}<br>
+        <div><strong>💬 Message:</strong><br>${msg.body}</div>
+        <small>📅 ${new Date(msg.date).toLocaleString()}</small>
+      `;
+
+      if (msg.replies && msg.replies.length > 0) {
+        html += `<div class="replies">`;
+        msg.replies.forEach(reply => {
+          html += `
+            <div class="reply-bubble">
+              <div><strong>🔁 Reply from:</strong> ${reply.from}</div>
+              <div>${reply.body}</div>
+              <small>📅 ${new Date(reply.date).toLocaleString()}</small>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      html += `
+        <div class="reply-box">
+          <textarea placeholder="Type your reply..." rows="3" class="reply-text"></textarea>
+          <button class="btn-action" onclick="sendReply('${msg._id}', '${msg.from}', this)">Send Reply</button>
+        </div>
+      `;
+
+      card.innerHTML = html;
+      list.appendChild(card);
+    });
+
+    document.getElementById("messagesModal").style.display = "flex";
+  } catch (err) {
+    console.error("❌ Failed to fetch messages:", err);
+    alert("Error fetching messages.");
+  }
+
+  localStorage.setItem("lastMessageViewedAt", new Date().toISOString());
+  document.getElementById("viewMessagesBtn").classList.remove("has-new");
+}
+
+
+  function closeMessagesModal() {
+    document.getElementById("messagesModal").style.display = "none";
+  }
+
+  async function checkNewMessages() {
+  const lenderEmail = sessionStorage.getItem("userEmail");
+  const lastViewed = localStorage.getItem("lastMessageViewedAt");
+
+  if (!lenderEmail) return;
+
+  try {
+   const res = await fetch(`http://localhost:5000/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
+
+
+
+    const messages = await res.json();
+
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const hasNew = messages.some(msg => {
+      return !lastViewed || new Date(msg.date) > new Date(lastViewed);
+    });
+
+    if (hasNew) {
+      document.getElementById("viewMessagesBtn").classList.add("has-new");
+    }
+  } catch (err) {
+    console.error("Failed to check new messages:", err);
+  }
+}
+
+async function sendReply(messageId, toEmail, btn) {
+  const from = sessionStorage.getItem("userEmail");
+  const textarea = btn.previousElementSibling;
+  const body = textarea.value.trim();
+
+  if (!body) {
+    alert("Reply cannot be empty.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/api/send-reply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messageId, from, body }) // ✅ sending reply to correct message
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Reply sent successfully.");
+      textarea.value = "";
+      btn.disabled = true;
+    } else {
+      alert("Failed to send reply: " + data.error);
+    }
+  } catch (err) {
+    console.error("Reply error:", err);
+    alert("Error sending reply.");
+  }
+}
+
+
+</script>
+
+</body>
+</html>

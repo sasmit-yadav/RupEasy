@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up – RupEasy</title>
+  <link rel="stylesheet" href="style.css" />
+
+   <style>
+    .captcha-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.captcha-container label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.captcha-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+#generatedCaptcha {
+  font-family: monospace;
+  font-size: 1.4rem;
+  background-color: #f1f1f1;
+  padding: 8px 14px;
+  border: 2px dashed #888;
+  border-radius: 6px;
+  user-select: none;
+  letter-spacing: 2px;
+}
+
+.captcha-box button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.captcha-box button:hover {
+  background-color: #2980b9;
+}
+
+  </style>
+
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="signin.html">Sign In</a></li>
+      <li><a href="signup.html" class="active">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+
+  <section class="form-section">
+    <h2>Create Your Account</h2>
+   <!-- signup.html -->
+<form id="signupForm">
+  <label for="name">Full Name:</label>
+  <input type="text" id="name" required />
+
+  <label for="signupEmail">Email:</label>
+  <input type="email" id="signupEmail" required />
+
+  <label for="signupPassword">Password:</label>
+  <input type="password" id="signupPassword" required />
+
+  <label for="confirmPassword">Confirm Password:</label>
+  <input type="password" id="confirmPassword" required />
+
+  <div style="margin: 15px 0;">
+    <label><input type="radio" name="signupRole" value="borrower" required> I am a Borrower</label><br>
+    <label><input type="radio" name="signupRole" value="lender"> I am a Lender</label>
+  </div>
+
+  <div class="captcha-container">
+  <label for="captchaInput">Enter CAPTCHA:</label>
+  <div class="captcha-box">
+    <span id="generatedCaptcha"></span>
+    <button type="button" onclick="generateCaptcha()" title="Reload CAPTCHA">⟳</button>
+  </div>
+  <input type="text" id="captchaInput" placeholder="Type the CAPTCHA here" required />
+</div>
+
+  <!-- Borrower Fields -->
+<div id="borrowerFields" style="display: none;">
+  <label for="salary">Monthly Salary (₹):</label>
+  <input type="number" id="salary" name="salary" min="0">
+</div>
+
+  <!-- Lender-only fields -->
+  <div id="lenderFields" style="display: none; margin-top: 20px;">
+    <label for="interestRate">Interest Rate (%):</label>
+    <input type="number" id="interestRate" step="0.1" min="1" />
+
+    <label for="maxLoanAmount">Max Loan Amount (₹):</label>
+    <input type="number" id="maxLoanAmount" min="100" />
+
+    <label for="availableFunds">Available Funds (₹):</label>
+    <input type="number" id="availableFunds" min="100" />
+  </div>
+
+  <button type="submit" class="btn">Sign Up</button>
+</form>
+
+
+    <p class="switch-auth">Already have an account? <a href="signin.html">Sign in here</a></p>
+  </section>
+
+ <script>
+
+   let currentCaptcha = "";
+
+  function generateCaptcha() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    currentCaptcha = "";
+    for (let i = 0; i < 5; i++) {
+      currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById("generatedCaptcha").textContent = currentCaptcha;
+  }
+
+  function validateCaptcha() {
+    const userInput = document.getElementById("captchaInput").value.trim();
+    return userInput === currentCaptcha;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    generateCaptcha();
+    const signupForm = document.getElementById("signupForm");
+    const roleRadios = document.querySelectorAll('input[name="signupRole"]');
+    const lenderFields = document.getElementById("lenderFields");
+    const borrowerFields = document.getElementById("borrowerFields");
+
+    
+
+    // Show relevant fields based on selected role
+    roleRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        if (radio.value === "lender") {
+          lenderFields.style.display = "block";
+          borrowerFields.style.display = "none";
+        } else if (radio.value === "borrower") {
+          lenderFields.style.display = "none";
+          borrowerFields.style.display = "block";
+        }
+      });
+    });
+
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!validateCaptcha()) {
+        alert("❌ CAPTCHA does not match. Please try again.");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
+      }
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("confirmPassword").value;
+      const role = document.querySelector('input[name="signupRole"]:checked')?.value;
+
+      if (!name || !email || !password || !confirm || !role) {
+        alert("Please fill all fields and select your role.");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+      }
+
+      if (password !== confirm) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const payload = { name, email, password, role };
+
+      if (role === "lender") {
+        payload.interestRate = Number(document.getElementById("interestRate").value);
+        payload.maxLoanAmount = Number(document.getElementById("maxLoanAmount").value);
+        payload.availableFunds = Number(document.getElementById("availableFunds").value);
+      } else if (role === "borrower") {
+        payload.salary = Number(document.getElementById("salary").value);
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("Signup successful! Please sign in.");
+          window.location.href = "signin.html";
+        } else {
+          alert(data.error || "Signup failed");
+        }
+      } catch (error) {
+        console.error("Signup error:", error);
+        alert("Something went wrong. Try again.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Check Credit Score – RupEasy</title>
+  <link rel="stylesheet" href="/frontend/style.css" />
+  <style>
+    .score-section {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #f4f6fa;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+
+    .score-section h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #2C3E50;
+    }
+
+    .score-section label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .score-section input,
+    .score-section select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      margin-top: 25px;
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .result-box {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #eaf2f8;
+      border-left: 5px solid #3498db;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">RupEasy</div>
+    <ul class="nav-links">
+      <li><a href="/frontend/dashboard.html">Dashboard</a></li>
+      <li><a href="/frontend/contact.html">Contact Lender</a></li>
+      <li><a href="/frontend/myprofile.html">My Profile</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <a href="/frontend/dashboard.html" class="back-btn">← Back to Dashboard</a>
+
+  <!-- Credit Score Section -->
+  <section class="score-section">
+    <h2>AI Credit Score Check</h2>
+    <form id="scoreForm">
+      <label for="income">Monthly Income (₹):</label>
+      <input type="number" id="income" required />
+
+      <label for="monthly_expenses">Monthly Expenses (₹):</label>
+      <input type="number" id="monthly_expenses" required />
+
+      <label for="employment_length">Years of Employment:</label>
+      <input type="number" id="employment_length" min="0" required />
+
+      <label for="credit_util_ratio">Credit Utilization Ratio (0–1.5):</label>
+      <input type="number" id="credit_util_ratio" step="0.01" min="0" max="2" required />
+
+      <label for="education_level">Education Level:</label>
+      <select id="education_level" required>
+        <option value="">Select...</option>
+        <option value="High School">High School</option>
+        <option value="Graduate">Graduate</option>
+        <option value="Postgraduate">Postgraduate</option>
+      </select>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" min="18" required />
+
+      <label for="existing_loans">Number of Existing Loans:</label>
+    <input type="number" id="existing_loans" min="0" required readonly />
+
+
+      <button type="submit" class="btn">Calculate Score</button>
+    </form>
+
+    <div id="scoreResult" class="result-box"></div>
+  </section>
+<script>
+  // Form Submission: Predict Credit Score
+  document.getElementById("scoreForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const income = parseInt(document.getElementById("income").value);
+    const monthly_expenses = parseInt(document.getElementById("monthly_expenses").value);
+    const employment_length = parseInt(document.getElementById("employment_length").value);
+    const credit_util_ratio = parseFloat(document.getElementById("credit_util_ratio").value);
+    const education_level = document.getElementById("education_level").value;
+    const age = parseInt(document.getElementById("age").value);
+    const existing_loans = parseInt(document.getElementById("existing_loans").value);
+    const resultBox = document.getElementById("scoreResult");
+
+    try {
+      const response = await fetch("http://localhost:5001/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          income,
+          age,
+          existing_loans,
+          monthly_expenses,
+          employment_length,
+          credit_util_ratio,
+          education_level
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      resultBox.innerHTML = `
+        <strong>Predicted Credit Score:</strong> <span style="font-size: 1.8rem;">${result.score}</span><br>
+        <strong>Status:</strong> ${result.verdict}
+      `;
+      resultBox.style.display = "block";
+
+    } catch (err) {
+      console.error("API error:", err);
+      resultBox.innerHTML = `<span style="color:red;"><strong>Error:</strong> ${err.message}</span>`;
+      resultBox.style.display = "block";
+    }
+  });
+
+  // Logout
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = "/frontend/signin.html";
+  }
+
+  // Auto-fill Income and Existing Loans from Database
+  window.addEventListener("DOMContentLoaded", async () => {
+    const userId = sessionStorage.getItem("user_id");
+    if (!userId) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/user/${userId}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        // Fill fields
+        if (data.salary) document.getElementById("income").value = data.salary;
+        if (data.existing_loans !== undefined) {
+          document.getElementById("existing_loans").value = data.existing_loans;
+          document.getElementById("existing_loans").readOnly = true; // prevent manual edit
+        }
+      } else {
+        console.error("User fetch failed:", data.error);
+      }
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    }
+  });
+</script>
+</body>
+</html>
