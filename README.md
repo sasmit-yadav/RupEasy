@@ -33,7 +33,7 @@ RupEasy is a digital microloan and financial management platform designed for as
 2. **Start the Machine Learning Model (Python):**
    - Go to the model directory:
      ```bash
-     cd model
+     cd ml_model
      ```
    - Install Python dependencies:
      ```bash
