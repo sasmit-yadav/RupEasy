@@ -74,6 +74,6 @@ RupEasy is a digital microloan and financial management platform designed for as
 
 5. **Usage:**
    - Sign up as a borrower or lender.
-   - Apply for a microloan, check eligibility, and track your financial activities on the dashboard.
+   - Apply for a microloan, check eligibility, and track your financial activities on the dashboard and much more.
 
 ---
