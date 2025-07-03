@@ -1,24 +1,28 @@
 # RupEasy
 
-RupEasy is a project designed to streamline and simplify your financial management and money tracking. Whether you're looking for a personal expense tracker, a budgeting tool, or a simple way to keep your financial records organized, RupEasy provides an easy-to-use interface and robust features.
+RupEasy is a digital microloan and financial management platform designed for aspiring entrepreneurs and small businesses. It leverages AI-driven analysis to evaluate loan applications and provides a simple, secure, and transparent way to access microloans and track your finances.
+
+## Tech Stack
+
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB (via Mongoose)
+- **ML Model:** Python (Flask or similar, in `/model` folder)
+- **Other:** AI-based credit scoring, RESTful APIs
 
 ## Features
 
-- Track daily, weekly, and monthly income and expenses
-- Categorize transactions for better insights
-- View detailed reports and summaries
-- User-friendly dashboard
-- Export data for backup or analysis
-- Responsive design for use on any device
-
-## Getting Started
+- AI-powered microloan eligibility and approval
+- Track income and expenses with categories and reports
+- User-friendly dashboard and responsive design
+- Secure data handling and export options
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (version >= 14)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-
-### Installation
+  
+## How to Test
 
 1. **Clone the repository:**
    ```bash
@@ -26,48 +30,50 @@ RupEasy is a project designed to streamline and simplify your financial manageme
    cd RupEasy
    ```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+2. **Start the Machine Learning Model (Python):**
+   - Go to the model directory:
+     ```bash
+     cd model
+     ```
+   - Install Python dependencies:
+     ```bash
+     pip install -r requirements.txt
+     ```
+   - Start the ML model server:
+     ```bash
+     python3 app.py
+     ```
+   - The model server will run (usually on port 5001 or as configured).
 
-3. **Start the development server:**
-   ```bash
-   npm start
-   # or
-   yarn start
-   ```
+3. **Backend Setup (Node.js):**
+   - Open a new terminal window and go to the backend directory:
+     ```bash
+     cd ../backend
+     ```
+   - Install dependencies:
+     ```bash
+     npm install
+     ```
+   - Start the backend server:
+     ```bash
+     npm start
+     ```
+   - The backend will be available at `http://localhost:5000`.
 
-4. **Open your browser and visit:**
-   ```
-   http://localhost:3000
-   ```
+4. **Frontend Setup:**
+   - Open another terminal and go to the frontend directory:
+     ```bash
+     cd ../frontend
+     ```
+   - You can use a simple HTTP server or open the HTML files directly in your browser.
+   - For local testing, run:
+     ```bash
+     npx serve .
+     ```
+   - Visit `http://localhost:3000` (or the port shown) to access the app.
 
-## Usage
-
-- Add your transactions (income or expense) with categories and descriptions.
-- Review your spending and income trends in the dashboard.
-- Export your data if needed for personal records.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
-
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contact
-
-For questions, suggestions, or feedback, feel free to open an issue or contact [sasmit-yadav](https://github.com/sasmit-yadav).
+5. **Usage:**
+   - Sign up as a borrower or lender.
+   - Apply for a microloan, check eligibility, and track your financial activities on the dashboard.
 
 ---
-Happy budgeting with RupEasy!
