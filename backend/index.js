@@ -4,13 +4,13 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const loanRoutes = require("./routes/loanRoutes");
+require('dotenv').config();
+
 
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(
-    "mongodb+srv://rupeasy:rupeasy1234@rupeasy.kb70txj.mongodb.net/rupeasy?retryWrites=true&w=majority&appName=rupeasy"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
