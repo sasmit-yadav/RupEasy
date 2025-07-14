@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up – RupEasy</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 
    <style>
     .captcha-container {
@@ -203,19 +204,21 @@
       }
 
       try {
-        const response = await fetch("http://localhost:5000/api/signup", {
+        const response = await fetch(`${window.API_BASE_URL}/api/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-
-        const data = await response.json();
-
+        let data = null;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
         if (response.ok) {
           alert("Signup successful! Please sign in.");
           window.location.href = "signin.html";
         } else {
-          alert(data.error || "Signup failed");
+          alert((data && data.error) || "Signup failed");
         }
       } catch (error) {
         console.error("Signup error:", error);

@@ -5,6 +5,8 @@
   <title>Contact Lender – RupEasy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
+  
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -106,9 +108,12 @@
   window.addEventListener("DOMContentLoaded", async () => {
     const dropdown = document.getElementById("lenderEmail");
     try {
-      const res = await fetch("http://localhost:5000/api/lenders");
-      const lenders = await res.json();
-
+      const res = await fetch(`${window.API_BASE_URL}/api/lenders`);
+      let lenders = [];
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        lenders = await res.json();
+      }
       lenders.forEach(lender => {
         const option = document.createElement("option");
         option.value = lender.email;
@@ -132,18 +137,21 @@
     const body = document.getElementById("message").value.trim();
 
     try {
-      const res = await fetch("http://localhost:5000/api/send-message", {
+      const res = await fetch(`${window.API_BASE_URL}/api/send-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ from, to, subject, body })
       });
-
-      const result = await res.json();
+      let result = null;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        result = await res.json();
+      }
       if (res.ok) {
         document.getElementById("successMessage").style.display = "block";
         contactForm.reset();
       } else {
-        alert(result.error || "Failed to send message.");
+        alert((result && result.error) || `Failed to send message. (${res.status})`);
       }
     } catch (err) {
       console.error("Message send error:", err);

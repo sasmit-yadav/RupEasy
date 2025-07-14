@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Find a Lender – RupEasy</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="config.js"></script>
     <style>
       .lender-list {
         padding: 40px;
@@ -57,14 +58,16 @@
         const container = document.getElementById("lenderContainer");
 
         try {
-          const res = await fetch("http://localhost:5000/api/lenders");
-          const lenders = await res.json();
-
+          const res = await fetch(`${window.API_BASE_URL}/api/lenders`);
+          let lenders = [];
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            lenders = await res.json();
+          }
           if (!Array.isArray(lenders) || lenders.length === 0) {
             container.innerHTML = "<p>No lenders available at the moment.</p>";
             return;
           }
-
           lenders.forEach((lender) => {
             const card = document.createElement("div");
             card.className = "lender-card";

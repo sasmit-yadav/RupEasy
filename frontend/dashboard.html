@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard – Rupeezy</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 <style>
 /* Modal and layout */
 .modal {
@@ -259,8 +260,12 @@ async function showBorrowerMessages() {
   if (!borrowerEmail) return alert("Please login first.");
 
   try {
-    const res = await fetch(`http://localhost:5000/api/messages?participant=${encodeURIComponent(borrowerEmail)}`);
-    const messages = await res.json();
+    const res = await fetch(`${window.API_BASE_URL}/api/messages?participant=${encodeURIComponent(borrowerEmail)}`);
+    let messages = [];
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      messages = await res.json();
+    }
 
     const list = document.getElementById("borrowerMessageList");
     list.innerHTML = "";

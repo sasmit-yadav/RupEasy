@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Apply for a Loan</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 </head>
 <body>
    <nav class="navbar">
@@ -88,8 +89,12 @@
 
     // Fetch salary from profile
     try {
-      const res = await fetch(`http://localhost:5000/api/profile?email=${encodeURIComponent(email)}`);
-      const user = await res.json();
+      const res = await fetch(`${window.API_BASE_URL}/api/profile?email=${encodeURIComponent(email)}`);
+      let user = null;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        user = await res.json();
+      }
       if (res.ok && user && user.salary) {
         document.getElementById("income").value = user.salary;
       } else {
@@ -102,8 +107,12 @@
 
     //  Fetch lenders list
     try {
-      const res = await fetch("http://localhost:5000/api/lenders");
-      const lenders = await res.json();
+      const res = await fetch(`${window.API_BASE_URL}/api/lenders`);
+      let lenders = [];
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        lenders = await res.json();
+      }
       const lenderDropdown = document.getElementById("lenderEmail");
       lenderDropdown.innerHTML = '<option value="">Select a lender</option>';
       lenders.forEach(lender => {
@@ -125,7 +134,7 @@
       const lenderEmail = document.getElementById("lenderEmail").value.trim();
 
       try {
-        const response = await fetch("http://localhost:5000/api/apply-loan", {
+        const response = await fetch(`${window.API_BASE_URL}/api/apply-loan`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -135,15 +144,16 @@
             lenderEmail: lenderEmail
           })
         });
-
-        const data = await response.json();
-
+        let data = null;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
         if (response.ok) {
           alert("Loan request submitted!");
           window.location.href = "loan-status.html";
-
         } else {
-          alert(data.error || "Loan request failed.");
+          alert((data && data.error) || `Loan request failed. (${response.status})`);
         }
       } catch (err) {
         console.error("Error submitting loan:", err);

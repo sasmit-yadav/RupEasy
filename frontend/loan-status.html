@@ -6,6 +6,7 @@
   <title>Loan Status – RupEasy</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="config.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -194,32 +195,29 @@
       document.getElementById("borrowerName").textContent = name;
 
       try {
-        const res = await fetch(`http://localhost:5000/api/my-loans?email=${encodeURIComponent(email)}`);
-        const data = await res.json();
-
+        const res = await fetch(`${window.API_BASE_URL}/api/my-loans?email=${encodeURIComponent(email)}`);
+        let data = null;
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await res.json();
+        }
         const tableBody = document.getElementById("statusTableBody");
         tableBody.innerHTML = "";
-
         if (!data || !data.loans || data.loans.length === 0) {
           tableBody.innerHTML = "<tr><td colspan='4'>No loan applications found.</td></tr>";
           return;
         }
-
         data.loans.forEach(loan => {
           const tr = document.createElement("tr");
-
           const badgeClass = `status-${loan.status.toLowerCase()}`;
-
           tr.innerHTML = `
             <td data-label="Amount">₹${loan.amount}</td>
             <td data-label="Status"><span class="badge ${badgeClass}">${loan.status}</span></td>
             <td data-label="Lender">${loan.lenderEmail}</td>
             <td data-label="Date">${new Date(loan.date).toLocaleDateString('en-IN')}</td>
           `;
-
           tableBody.appendChild(tr);
         });
-
       } catch (err) {
         console.error("Error fetching loans:", err);
         alert("Something went wrong. Try again later.");

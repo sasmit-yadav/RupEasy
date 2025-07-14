@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Check Credit Score – RupEasy</title>
   <link rel="stylesheet" href="/frontend/style.css" />
+  <script src="/frontend/config.js"></script>
   <style>
     .score-section {
       max-width: 700px;
@@ -128,7 +129,7 @@
     const resultBox = document.getElementById("scoreResult");
 
     try {
-      const response = await fetch("http://localhost:5001/api/predict", {
+      const response = await fetch(`${window.ML_API_BASE_URL}/api/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,19 +142,19 @@
           education_level
         })
       });
-
-      const result = await response.json();
-
-      if (result.error) {
+      let result = null;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      }
+      if (result && result.error) {
         throw new Error(result.error);
       }
-
       resultBox.innerHTML = `
         <strong>Predicted Credit Score:</strong> <span style="font-size: 1.8rem;">${result.score}</span><br>
         <strong>Status:</strong> ${result.verdict}
       `;
       resultBox.style.display = "block";
-
     } catch (err) {
       console.error("API error:", err);
       resultBox.innerHTML = `<span style="color:red;"><strong>Error:</strong> ${err.message}</span>`;
@@ -169,22 +170,24 @@
 
   // Auto-fill Income and Existing Loans from Database
   window.addEventListener("DOMContentLoaded", async () => {
-    const userId = sessionStorage.getItem("user_id");
-    if (!userId) return;
+    const email = sessionStorage.getItem("userEmail");
+    if (!email) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/user/${userId}`);
-      const data = await res.json();
-
-      if (res.ok) {
-        // Fill fields
-        if (data.salary) document.getElementById("income").value = data.salary;
-        if (data.existing_loans !== undefined) {
-          document.getElementById("existing_loans").value = data.existing_loans;
-          document.getElementById("existing_loans").readOnly = true; // prevent manual edit
+      const res = await fetch(`${window.API_BASE_URL}/api/profile?email=${encodeURIComponent(email)}`);
+      let user = null;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        user = await res.json();
+      }
+      if (res.ok && user) {
+        if (user.salary) document.getElementById("income").value = user.salary;
+        if (user.existing_loans !== undefined) {
+          document.getElementById("existing_loans").value = user.existing_loans;
+          document.getElementById("existing_loans").readOnly = true;
         }
       } else {
-        console.error("User fetch failed:", data.error);
+        console.error("User fetch failed:", user && user.error);
       }
     } catch (err) {
       console.error("Error fetching user:", err);

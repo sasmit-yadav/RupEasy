@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Profile – RupEasy</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
   <style>
     .profile-section {
       max-width: 600px;
@@ -135,9 +136,12 @@
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/api/profile?email=${encodeURIComponent(email)}`);
-        const user = await res.json();
-
+        const res = await fetch(`${window.API_BASE_URL}/api/profile?email=${encodeURIComponent(email)}`);
+        let user = null;
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          user = await res.json();
+        }
         if (res.ok && user) {
           document.getElementById("name").value = user.name || "";
           document.getElementById("email").value = user.email || "";
@@ -170,17 +174,20 @@
         }
 
         try {
-          const res = await fetch("http://localhost:5000/api/update-profile", {
-  method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload)
-});
-
-          const result = await res.json();
+          const res = await fetch(`${window.API_BASE_URL}/api/update-profile`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          let result = null;
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            result = await res.json();
+          }
           if (res.ok) {
             alert("Profile updated successfully!");
           } else {
-            alert("Error: " + (result.error || "Update failed."));
+            alert("Error: " + (result && result.error || "Update failed."));
           }
         } catch (err) {
           console.error("Update error:", err);

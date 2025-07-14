@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lender Dashboard – RupEasy</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="config.js"></script>
   <style>
     * {
       margin: 0;
@@ -349,17 +350,18 @@
       const tableBody = document.getElementById("loanTableBody");
 
       try {
-        const res = await fetch(`http://localhost:5000/api/lender-loans?email=${encodeURIComponent(lenderEmail)}`);
-        const loans = await res.json();
-
+        const res = await fetch(`${window.API_BASE_URL}/api/lender-loans?email=${encodeURIComponent(lenderEmail)}`);
+        let loans = [];
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          loans = await res.json();
+        }
         if (!Array.isArray(loans) || loans.length === 0) {
           tableBody.innerHTML = `<tr><td colspan="5">No loan requests found.</td></tr>`;
           return;
         }
-
         loans.forEach(loan => {
           const row = document.createElement("tr");
-
           row.innerHTML = `
             <td data-label="Borrower">${loan.name}</td>
             <td data-label="Amount">₹${loan.amount}</td>
@@ -376,7 +378,6 @@
               <button class="btn-action" onclick="viewHistory('${loan.email}', '${loan.name}')">View Details</button>
             </td>
           `;
-
           tableBody.appendChild(row);
         });
       } catch (err) {
@@ -392,19 +393,21 @@
 
     async function updateLoanStatus(id, status) {
       try {
-        const res = await fetch(`http://localhost:5000/api/update-loan-status/${id}`, {
+        const res = await fetch(`${window.API_BASE_URL}/api/update-loan-status/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status })
         });
-
-        const data = await res.json();
-
+        let data = null;
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await res.json();
+        }
         if (res.ok) {
           alert(`Loan ${status} successfully!`);
           location.reload();
         } else {
-          alert("Error: " + (data.error || "Status update failed."));
+          alert("Error: " + (data && data.error || "Status update failed."));
         }
       } catch (err) {
         console.error("Status update error:", err);
@@ -414,9 +417,12 @@
 
   async function viewHistory(borrowerEmail, borrowerName) {
   try {
-  const res = await fetch(`http://localhost:5000/api/my-loans?email=${encodeURIComponent(borrowerEmail)}`);
-
-  const data = await res.json();
+  const res = await fetch(`${window.API_BASE_URL}/api/my-loans?email=${encodeURIComponent(borrowerEmail)}`);
+  let data = null;
+  const contentType = res.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    data = await res.json();
+  }
   console.log("📦 API Response:", data);
     
 
@@ -480,12 +486,14 @@ function closeModal() {
   if (!lenderEmail) return alert("Login required");
 
   try {
-    const res = await fetch(`http://localhost:5000/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
-    const messages = await res.json();
-
+    const res = await fetch(`${window.API_BASE_URL}/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
+    let messages = [];
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      messages = await res.json();
+    }
     const list = document.getElementById("messageList");
     list.innerHTML = "";
-
     if (!Array.isArray(messages) || messages.length === 0) {
       list.innerHTML = "<p>No messages from borrowers.</p>";
       return;
@@ -549,13 +557,13 @@ function closeModal() {
   if (!lenderEmail) return;
 
   try {
-   const res = await fetch(`http://localhost:5000/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
-
-
-
-    const messages = await res.json();
-
-    if (!Array.isArray(messages) || messages.length === 0) return;
+   const res = await fetch(`${window.API_BASE_URL}/api/messages?participant=${encodeURIComponent(lenderEmail)}`);
+   let messages = [];
+   const contentType = res.headers.get("content-type");
+   if (contentType && contentType.includes("application/json")) {
+     messages = await res.json();
+   }
+   if (!Array.isArray(messages) || messages.length === 0) return;
 
     const hasNew = messages.some(msg => {
       return !lastViewed || new Date(msg.date) > new Date(lastViewed);
@@ -580,20 +588,22 @@ async function sendReply(messageId, toEmail, btn) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/api/send-reply", {
+    const res = await fetch(`${window.API_BASE_URL}/api/send-reply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageId, from, body }) // ✅ sending reply to correct message
+      body: JSON.stringify({ messageId, from, body })
     });
-
-    const data = await res.json();
-
+    let data = null;
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await res.json();
+    }
     if (res.ok) {
       alert("Reply sent successfully.");
       textarea.value = "";
       btn.disabled = true;
     } else {
-      alert("Failed to send reply: " + data.error);
+      alert("Failed to send reply: " + (data && data.error));
     }
   } catch (err) {
     console.error("Reply error:", err);

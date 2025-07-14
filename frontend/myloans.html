@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Loans – RupEasy</title>
   <link rel="stylesheet" href="style.css" />
-
+  <script src="config.js"></script>
 
 <style>
  .my-loans {
@@ -82,18 +82,18 @@
     const container = document.getElementById("loan-list");
 
     try {
-      const res = await fetch(`http://localhost:5000/api/my-loans?email=${encodeURIComponent(email)}`);
-      const data = await res.json();
-
-      const loans = data.loans;
-
+      const res = await fetch(`${window.API_BASE_URL}/api/my-loans?email=${encodeURIComponent(email)}`);
+      let data = null;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      }
+      const loans = data && data.loans;
       console.log("Loans fetched:", loans);
-
       if (!Array.isArray(loans) || loans.length === 0) {
         container.innerHTML = "<p>No loans found.</p>";
         return;
       }
-
       loans.forEach(loan => {
         const card = document.createElement("div");
         card.className = "loan-card";
@@ -105,7 +105,6 @@
         `;
         container.appendChild(card);
       });
-
     } catch (err) {
       console.error("Loan fetch failed:", err);
       container.innerHTML = "<p>Failed to load your loans.</p>";

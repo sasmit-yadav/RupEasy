@@ -5,6 +5,7 @@
   <title>Loan Agreement – RupEasy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -121,7 +122,7 @@ I confirm that the Aadhar number and name I have entered below are accurate and 
 
     <form id="agreementForm">
       <label for="aadhar">Enter Your Aadhar Number:</label>
-      <input type="text" id="aadhar" maxlength="12" required pattern="\\d{12}" placeholder="1234-5678-9012" />
+      <input type="text" id="aadhar" maxlength="12" required pattern="\d{12}"      " placeholder="1234-5678-9012" />
 
       <label for="signature">Type Your Full Name (Digital Signature):</label>
       <input type="text" id="signature" required placeholder="Your Full Name" />
@@ -150,10 +151,6 @@ I confirm that the Aadhar number and name I have entered below are accurate and 
         alert("❌ Please enter a valid full name for signature.");
         return;
       }
-
-      // Optional: Save to backend (Firebase or Flask)
-      // Example:
-      // fetch("/api/save-agreement", { method: "POST", body: JSON.stringify({ aadhar, signature }) })
 
       document.getElementById("successMessage").style.display = "block";
       document.getElementById("agreementForm").reset();

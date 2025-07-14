@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign In – RupEasy</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 
   <style>
     .captcha-container {
@@ -133,37 +134,34 @@
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/signin", {
+      const response = await fetch(`${window.API_BASE_URL}/api/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      let data = null;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      }
 
       if (response.ok) {
         console.log("Login successful", data);
-
         // Store user info
         sessionStorage.setItem("userName", data.name);
-
-sessionStorage.setItem("userEmail", data.email);
-sessionStorage.setItem("userRole", data.role);
-sessionStorage.setItem("user_id", data._id);
-
-
-
-
+        sessionStorage.setItem("userEmail", data.email);
+        sessionStorage.setItem("userRole", data.role);
+        sessionStorage.setItem("user_id", data._id);
         console.log("Stored in sessionStorage:", {
           name: sessionStorage.getItem("userName"),
           email: sessionStorage.getItem("userEmail"),
           role: sessionStorage.getItem("userRole")
         });
-
         const dashboard = data.role === "borrower" ? "dashboard.html" : "lender-dashboard.html";
         window.location.href = dashboard;
       } else {
-        alert(data.error || "Login failed.");
+        alert((data && data.error) || `Login failed. (${response.status})`);
       }
     } catch (err) {
       console.error("Sign-in error:", err);
