@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Check Credit Score – RupEasy</title>
-  <link rel="stylesheet" href="/frontend/style.css" />
-  <script src="/frontend/config.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
   <style>
     .score-section {
       max-width: 700px;
@@ -69,14 +69,14 @@
   <nav class="navbar">
     <div class="logo">RupEasy</div>
     <ul class="nav-links">
-      <li><a href="/frontend/dashboard.html">Dashboard</a></li>
-      <li><a href="/frontend/contact.html">Contact Lender</a></li>
-      <li><a href="/frontend/myprofile.html">My Profile</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="contact.html">Contact Lender</a></li>
+      <li><a href="myprofile.html">My Profile</a></li>
       <li><a href="#" onclick="logout()">Logout</a></li>
     </ul>
   </nav>
 
-  <a href="/frontend/dashboard.html" class="back-btn">← Back to Dashboard</a>
+  <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
 
   <!-- Credit Score Section -->
   <section class="score-section">
@@ -165,7 +165,7 @@
   // Logout
   function logout() {
     sessionStorage.clear();
-    window.location.href = "/frontend/signin.html";
+    window.location.href = "signin.html";
   }
 
   // Auto-fill Income and Existing Loans from Database
